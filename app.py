@@ -1,5 +1,5 @@
 from __future__ import print_function
-from flask import Flask, redirect, request
+from flask import Flask, redirect, request, session
 from flask_environments import Environments
 from bingads import *
 from bingads.bulk import *
@@ -11,8 +11,9 @@ app = Flask(__name__)
 def hello():
     return "Hello World!"
 
-@app.route("/register")
-def register():
+@app.route("/register/<customer_id>")
+def register(customer_id):
+    session['customer_id'] = customer_id
     oauth_web_auth_code_grant = generate_authenticator()
     return redirect(oauth_web_auth_code_grant.get_authorization_endpoint())
 
@@ -22,7 +23,7 @@ def callback():
     oauth_web_auth_code_grant.request_oauth_tokens_by_response_uri(request.url)
     oauth_tokens = oauth_web_auth_code_grant.oauth_tokens
     access_token = oauth_tokens.access_token
-    return "CALLBACK URL WOOT"
+    return session.pop('customer_id', None)
 
 def generate_authenticator():
     return OAuthWebAuthCodeGrant(
