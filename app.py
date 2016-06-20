@@ -6,9 +6,6 @@ from bingads.bulk import *
 import os
 
 app = Flask(__name__)
-env = Environments(self.app)
-env.from_object('app.config')
-
 
 @app.route("/")
 def hello():
