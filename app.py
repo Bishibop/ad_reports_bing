@@ -32,6 +32,7 @@ def generate_authenticator():
         redirection_uri=os.environ.get('BING_CALLBACK_URL')
     )
 
+app.secret_key = os.environ.get('FLASK_SECRET_KEY')
 
 if __name__ == "__main__":
     app.run()
