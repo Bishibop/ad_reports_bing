@@ -1,11 +1,22 @@
 from __future__ import print_function
 from flask import Flask, redirect, request, session
 from flask_environments import Environments
+from flask_sqlalchemy import SQLAlchemy
 from bingads import *
 from bingads.bulk import *
+from datetime import datetime
 import os
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+db = SQLAlchemy(app)
+
+class Customer(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    created_at = db.Column(db.DateTime)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.now)
+    bing_ads_api_key = db.Column(db.String)
 
 @app.route("/")
 def hello():
@@ -23,7 +34,10 @@ def callback():
     oauth_web_auth_code_grant.request_oauth_tokens_by_response_uri(request.url)
     oauth_tokens = oauth_web_auth_code_grant.oauth_tokens
     access_token = oauth_tokens.access_token
-    return session.pop('customer_id', None)
+    customer = Customer.query.get(session.pop('customer_id', None))
+    customer.bing_ads_api_key = access_token
+    db.session.commit()
+    return "Success? Maybe..."
 
 def generate_authenticator():
     return OAuthWebAuthCodeGrant(
