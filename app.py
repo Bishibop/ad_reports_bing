@@ -35,7 +35,7 @@ def callback():
     oauth_tokens = oauth_web_auth_code_grant.oauth_tokens
     access_token = oauth_tokens.access_token
     refresh_token = oauth_tokens.refresh_token
-    expires_in = timedelta(seconds=oauth_tokens.expires_in)
+    expires_in = timedelta(seconds=oauth_tokens.access_token_expires_in_seconds)
 
     customer.bing_ads_api_key = access_token
     customer.bing_ads_refresh_token = refresh_token
