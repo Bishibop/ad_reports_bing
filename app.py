@@ -33,7 +33,7 @@ def callback():
     customer = Customers.query.get(session.pop('customer_id', None))
     customer.bing_ads_api_key = access_token
     db.session.commit()
-    return "Success? Maybe..."
+    return redirect(os.environ.get('BING_RETURN_URL'))
 
 def generate_authenticator():
     return OAuthWebAuthCodeGrant(
