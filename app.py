@@ -39,7 +39,7 @@ def callback():
 
     customer.bing_ads_api_key = access_token
     customer.bing_ads_refresh_token = refresh_token
-    customer.expires_at = datetime.now() + expires_in
+    customer.bing_ads_expires_at = datetime.now() + expires_in
     db.session.commit()
     return redirect(os.environ.get('BING_RETURN_URL'))
 
