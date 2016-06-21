@@ -4,7 +4,7 @@ from flask_environments import Environments
 from flask_sqlalchemy import SQLAlchemy
 from bingads import *
 from bingads.bulk import *
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 
 app = Flask(__name__)
@@ -17,6 +17,8 @@ class Customers(db.Model):
     created_at = db.Column(db.DateTime)
     updated_at = db.Column(db.DateTime, onupdate=datetime.now)
     bing_ads_api_key = db.Column(db.String)
+    bing_ads_refresh_token = db.Column(db.String)
+    bing_ads_expires_at = db.Column(db.DateTime)
 
 @app.route("/<customer_id>")
 def register(customer_id):
@@ -26,12 +28,18 @@ def register(customer_id):
 
 @app.route("/callback")
 def callback():
+    customer = Customers.query.get(session.pop('customer_id', None))
+
     oauth_web_auth_code_grant = generate_authenticator()
     oauth_web_auth_code_grant.request_oauth_tokens_by_response_uri(request.url)
     oauth_tokens = oauth_web_auth_code_grant.oauth_tokens
     access_token = oauth_tokens.access_token
-    customer = Customers.query.get(session.pop('customer_id', None))
+    refresh_token = oauth_tokens.refresh_token
+    expires_in = timedelta(seconds=oauth_tokens.expires_in)
+
     customer.bing_ads_api_key = access_token
+    customer.bing_ads_refresh_token = refresh_token
+    customer.expires_at = datetime.now() + expires_in
     db.session.commit()
     return redirect(os.environ.get('BING_RETURN_URL'))
 
