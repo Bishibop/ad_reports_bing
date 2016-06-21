@@ -18,11 +18,7 @@ class Customers(db.Model):
     updated_at = db.Column(db.DateTime, onupdate=datetime.now)
     bing_ads_api_key = db.Column(db.String)
 
-@app.route("/")
-def hello():
-    return "Hello World!"
-
-@app.route("/register/<customer_id>")
+@app.route("/<customer_id>")
 def register(customer_id):
     session['customer_id'] = customer_id
     oauth_web_auth_code_grant = generate_authenticator()
