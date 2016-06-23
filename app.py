@@ -33,21 +33,23 @@ def callback():
     oauth_web_auth_code_grant = generate_authenticator()
     oauth_web_auth_code_grant.request_oauth_tokens_by_response_uri(request.url)
     oauth_tokens = oauth_web_auth_code_grant.oauth_tokens
-    print("TOKENS INCOMMING")
-    print(dir(oauth_tokens))
+
     access_token = oauth_tokens.access_token
     refresh_token = oauth_tokens.refresh_token
-    issued_at = oauth_tokens.issued_at
     expires_in_seconds = oauth_tokens.access_token_expires_in_seconds
 
-    # expires_in = timedelta(seconds=oauth_tokens.access_token_expires_in_seconds)
+    # Bing doesn't give you an issued_at time,
+    # so I just made it a bit before we received the response.
+    # We do this, rather than 'expires_at', to mirror AdWords' OAuth2 implementation.
+    issued_at = datetime.now() - timedelta(seconds=15)
 
     customer.bing_ads_access_token = access_token
     customer.bing_ads_refresh_token = refresh_token
-    customer.bing_ads_issued_at = issued_at
     customer.bing_ads_expires_in_seconds = expires_in_seconds
-    # customer.bing_ads_expires_at = datetime.now() + expires_in
+    customer.bing_ads_issued_at = issued_at
+
     db.session.commit()
+
     return redirect(os.environ.get('BING_RETURN_URL'))
 
 def generate_authenticator():
