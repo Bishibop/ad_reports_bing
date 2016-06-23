@@ -19,7 +19,6 @@ class Customers(db.Model):
     bing_ads_access_token = db.Column(db.String)
     bing_ads_refresh_token = db.Column(db.String)
     bing_ads_issued_at = db.Column(db.DateTime)
-    bing_ads_expires_in_seconds = dbColumn(db.Integer)
 
 @app.route("/<customer_id>")
 def register(customer_id):
