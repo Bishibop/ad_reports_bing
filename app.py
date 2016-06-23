@@ -16,9 +16,10 @@ class Customers(db.Model):
     name = db.Column(db.String)
     created_at = db.Column(db.DateTime)
     updated_at = db.Column(db.DateTime, onupdate=datetime.now)
-    bing_ads_api_key = db.Column(db.String)
+    bing_ads_access_token = db.Column(db.String)
     bing_ads_refresh_token = db.Column(db.String)
-    bing_ads_expires_at = db.Column(db.DateTime)
+    bing_ads_issued_at = db.Column(db.DateTime)
+    bing_ads_expires_in_seconds = dbColumn(db.Integer)
 
 @app.route("/<customer_id>")
 def register(customer_id):
@@ -33,13 +34,20 @@ def callback():
     oauth_web_auth_code_grant = generate_authenticator()
     oauth_web_auth_code_grant.request_oauth_tokens_by_response_uri(request.url)
     oauth_tokens = oauth_web_auth_code_grant.oauth_tokens
+    print("TOKENS INCOMMING")
+    print(dir(oauth_tokens))
     access_token = oauth_tokens.access_token
     refresh_token = oauth_tokens.refresh_token
-    expires_in = timedelta(seconds=oauth_tokens.access_token_expires_in_seconds)
+    issued_at = oauth_tokens.issued_at
+    expires_in_seconds = oauth_tokens.access_token_expires_in_seconds
 
-    customer.bing_ads_api_key = access_token
+    # expires_in = timedelta(seconds=oauth_tokens.access_token_expires_in_seconds)
+
+    customer.bing_ads_access_token = access_token
     customer.bing_ads_refresh_token = refresh_token
-    customer.bing_ads_expires_at = datetime.now() + expires_in
+    customer.bing_ads_issued_at = issued_at
+    customer.bing_ads_expires_in_seconds = expires_in_seconds
+    # customer.bing_ads_expires_at = datetime.now() + expires_in
     db.session.commit()
     return redirect(os.environ.get('BING_RETURN_URL'))
 
