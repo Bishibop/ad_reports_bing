@@ -21,11 +21,20 @@ class Customers(db.Model):
     bing_ads_issued_at =            db.Column(db.DateTime)
     bing_ads_expires_in_seconds =   db.Column(db.Integer)
 
-@app.route("/<customer_id>")
 def register(customer_id):
     session['customer_id'] = customer_id
     oauth_web_auth_code_grant = generate_authenticator()
     return redirect(oauth_web_auth_code_grant.get_authorization_endpoint())
+
+@app.route("/<customer_id>")
+def register_from_customer(customer_id):
+    session['came_from'] = 'customer'
+    return register(customer_id)
+
+@app.route("/admin/<customer_id>")
+def register_from_admin(customer_id)
+    session['came_from'] = 'admin'
+    return register(customer_id)
 
 @app.route("/callback")
 def callback():
@@ -51,7 +60,10 @@ def callback():
 
     db.session.commit()
 
-    return redirect(os.environ.get('BING_RETURN_URL'))
+    if session.pop('came_from', None) == 'admin':
+        return redirect(os.environ.get('MAIN_APP_URL') + '/customers/' + customer.id + '/api_permissions')
+    else:
+        return redirect(os.environ.get('MAIN_APP_URL') + '/api_permissions')
 
 def generate_authenticator():
     return OAuthWebAuthCodeGrant(
