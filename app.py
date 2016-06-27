@@ -32,7 +32,7 @@ def register_from_customer(customer_id):
     return register(customer_id)
 
 @app.route("/admin/<customer_id>")
-def register_from_admin(customer_id)
+def register_from_admin(customer_id):
     session['came_from'] = 'admin'
     return register(customer_id)
 
