@@ -61,7 +61,7 @@ def callback():
     db.session.commit()
 
     if session.pop('came_from', None) == 'admin':
-        return redirect(os.environ.get('MAIN_APP_URL') + '/customers/' + customer.id + '/api_permissions')
+        return redirect(os.environ.get('MAIN_APP_URL') + '/customers/' + str(customer.id) + '/api_permissions')
     else:
         return redirect(os.environ.get('MAIN_APP_URL') + '/api_permissions')
 
