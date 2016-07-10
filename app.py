@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from bingads import *
 from bingads.bulk import *
 from datetime import datetime, timedelta
-import os
+import os, click
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
@@ -25,6 +25,10 @@ def register(customer_id):
     session['customer_id'] = customer_id
     oauth_web_auth_code_grant = generate_authenticator()
     return redirect(oauth_web_auth_code_grant.get_authorization_endpoint())
+
+@app.cli.command()
+def test_shell_function():
+    click.echo('testing the shell functionality')
 
 @app.route("/<customer_id>")
 def register_from_customer(customer_id):
