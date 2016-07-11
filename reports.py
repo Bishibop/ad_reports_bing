@@ -102,7 +102,7 @@ def get_account_report_request(customer_id):
     report_time = reporting_service.factory.create('ReportTime')
 
     # Change this to use a custom time range
-    report_time.PredefinedTime='Yesterday'
+    report_time.PredefinedTime='LastMonth'
 
     # custom_date_range_start = reporting_service.factory.create('Date')
     # custom_date_range_start.Day = 1
@@ -118,7 +118,7 @@ def get_account_report_request(customer_id):
 
     report_request.Time = report_time
 
-    report_request.Aggregation = 'LastMonth'
+    report_request.Aggregation = 'Daily'
 
     report_columns = reporting_service.factory.create('ArrayOfAccountPerformanceReportColumn')
     report_columns.AccountPerformanceReportColumn.append([
