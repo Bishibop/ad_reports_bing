@@ -18,7 +18,7 @@ CLIENT_ID = os.environ.get('BING_CLIENT_ID')
 CLIENT_SECRET = os.environ.get('BING_CLIENT_SECRET')
 CALLBACK_URL = os.environ.get('BING_CALLBACK_URL')
 
-FILE_DIRECTORY = '~/code'
+FILE_DIRECTORY = '/tmp'
 
 RESULT_FILE_NAME = 'result.csv'
 
@@ -170,6 +170,7 @@ def get_report(customer_id):
         report_request = report_request,
         result_file_directory = FILE_DIRECTORY,
         result_file_name = RESULT_FILE_NAME,
+        decompress_result_file = True,
         overwrite_result_file = True,
     )
 
