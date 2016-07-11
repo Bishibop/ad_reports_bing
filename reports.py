@@ -18,7 +18,7 @@ CLIENT_ID = os.environ.get('BING_CLIENT_ID')
 CLIENT_SECRET = os.environ.get('BING_CLIENT_SECRET')
 CALLBACK_URL = os.environ.get('BING_CALLBACK_URL')
 
-FILE_DIRECTORY = '/Code/'
+FILE_DIRECTORY = '~/Code/'
 
 RESULT_FILE_NAME = 'result.csv'
 
