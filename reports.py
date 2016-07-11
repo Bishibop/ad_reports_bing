@@ -2,13 +2,12 @@ from bingads.service_client import ServiceClient
 from bingads.authorization import *
 from bingads import *
 from bingads.reporting import *
-
-import sys
-import webbrowser
 from time import gmtime, strftime
 from suds import WebFault
 from flask_sqlalchemy import SQLAlchemy
 from functools import partial
+import sys, csv
+
 from app import Customers
 
 
@@ -18,7 +17,7 @@ CLIENT_ID = os.environ.get('BING_CLIENT_ID')
 CLIENT_SECRET = os.environ.get('BING_CLIENT_SECRET')
 CALLBACK_URL = os.environ.get('BING_CALLBACK_URL')
 
-FILE_DIRECTORY = '~/Code/'
+FILE_DIRECTORY = '/tmp'
 
 RESULT_FILE_NAME = 'result.csv'
 
@@ -178,6 +177,10 @@ def get_report(customer_id):
 
     output_status_message("Program execution completed")
 
+    with open('/tmp/results.csv', 'rb') as csvfile:
+        reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+        for row in spamreader:
+            print ', '.join(row)
 
 
 
