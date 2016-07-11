@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from bingads import *
 from bingads.bulk import *
 from datetime import datetime, timedelta
-import os, click, shelltools
+import os, click
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
