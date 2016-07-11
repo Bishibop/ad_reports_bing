@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from bingads import *
 from bingads.bulk import *
 from datetime import datetime, timedelta
-import os, click
+import os, click, shelltools
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
@@ -20,8 +20,6 @@ class Customers(db.Model):
     bing_ads_refresh_token =        db.Column(db.String)
     bing_ads_issued_at =            db.Column(db.DateTime)
     bing_ads_expires_in_seconds =   db.Column(db.Integer)
-
-import shelltools
 
 def register(customer_id):
     session['customer_id'] = customer_id

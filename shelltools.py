@@ -9,6 +9,7 @@ from time import gmtime, strftime
 from suds import WebFault
 from flask_sqlalchemy import SQLAlchemy
 from functools import partial
+from app import Customers
 
 
 ENVIRONMENT = 'production'
