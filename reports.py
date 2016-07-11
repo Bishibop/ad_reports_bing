@@ -177,7 +177,7 @@ def get_report(customer_id):
 
     output_status_message("Program execution completed")
 
-    with open('/tmp/results.csv', 'rb') as csvfile:
+    with open('/tmp/result.csv', 'rb') as csvfile:
         reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
         for row in spamreader:
             print ', '.join(row)
