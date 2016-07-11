@@ -121,7 +121,7 @@ def get_account_report_request(customer_id):
 
     report_request.Aggregation = 'Daily'
 
-    report_columns = reporting_service.factory.create('AccountPerformanceReportColumn')
+    report_columns = reporting_service.factory.create('ArrayOfAccountPerformanceReportColumn')
     report_columns.AccountPerformanceReportColumn.append([
         'AccountName',
         'AccountNumber',
