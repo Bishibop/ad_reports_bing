@@ -6,7 +6,7 @@ from time import gmtime, strftime
 from suds import WebFault
 from flask_sqlalchemy import SQLAlchemy
 from functools import partial
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import sys, csv
 
 from app import Customers
@@ -174,7 +174,7 @@ def get_report_for_period(customer_id, start_date, end_date):
             print ', '.join(row)
 
 def get_report_for_last_month():
-    get_report_for_period(5, datetime.today() - timedelta(months=1), datetime.today())
+    get_report_for_period(5, date.today() - timedelta(days=30), date.today())
 
 
 # @app.cli.command()
