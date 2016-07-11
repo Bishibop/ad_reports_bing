@@ -169,7 +169,7 @@ def get_report_for_period(customer_id, start_date, end_date):
     output_status_message("Program execution completed")
 
     with open('/tmp/result.csv', 'rb') as csvfile:
-        reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+        reader = csv.reader(csvfile)
         for row in reader:
             print ', '.join(row)
 
