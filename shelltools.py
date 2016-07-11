@@ -69,7 +69,10 @@ def authenticate_with_oauth(customer_id):
 
 def get_refresh_token(customer_id):
     customer = Customers.query.get(customer_id)
-    return customer.bing_ads_refresh_token
+    refresh_token = customer.bing_ads_refresh_token
+    print("REFRESH TOKEN")
+    print(refresh_token)
+    returnn refresh_token
 
 
 def save_refresh_token(customer_id, oauth_tokens):
@@ -157,7 +160,7 @@ def get_report(customer_id):
     authenticate_with_oauth(customer_id)
 
     authorization_data.account_id = 40043731
-    authorization_data.customer_id = 19160679
+    # authorization_data.customer_id = 19160679
 
     report_request = get_account_report_request(customer_id)
 
