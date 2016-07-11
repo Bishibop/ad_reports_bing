@@ -118,7 +118,7 @@ def get_account_report_request(customer_id):
 
     report_request.Time = report_time
 
-    report_request.Aggregation = 'Daily'
+    report_request.Aggregation = 'LastMonth'
 
     report_columns = reporting_service.factory.create('ArrayOfAccountPerformanceReportColumn')
     report_columns.AccountPerformanceReportColumn.append([
@@ -135,14 +135,6 @@ def get_account_report_request(customer_id):
         'Conversions',
         'ConversionRate',
         'CostPerConversion',
-        'PhoneImpressions',
-        'PhoneCalls',
-        'ManualCalls',
-        'ClickCalls',
-        'Ptr',
-        'PhoneSpend',
-        'AverageCpp',
-        'TotalCostPhoneAndClicks',
     ])
     report_request.Columns = report_columns
 
