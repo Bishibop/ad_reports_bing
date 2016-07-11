@@ -54,7 +54,7 @@ def authenticate_with_oauth(customer_id):
 
     global authorization_data
 
-    authentication = OAuthDesktopMobileAuthCodeGrant(
+    authentication = OAuthWebAuthCodeGrant(
         client_id = CLIENT_ID
     )
 
@@ -70,8 +70,6 @@ def authenticate_with_oauth(customer_id):
 def get_refresh_token(customer_id):
     customer = Customers.query.get(customer_id)
     refresh_token = customer.bing_ads_refresh_token
-    print("REFRESH TOKEN")
-    print(refresh_token)
     return refresh_token
 
 
