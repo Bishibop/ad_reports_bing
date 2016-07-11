@@ -107,12 +107,12 @@ def get_account_report_request(customer_id, start_date, end_date):
     custom_date_range_start.Day = start_date.day
     custom_date_range_start.Month = start_date.month
     custom_date_range_start.Year = start_date.year
-    report_time.CustomDateRangeStart = customer_date_range_start
+    report_time.CustomDateRangeStart = custom_date_range_start
 
     custom_date_range_end = reporting_service.factory.create('Date')
     custom_date_range_end.Day = end_date.day
     custom_date_range_end.Month = end_date.month
-    cutom_date_range_end.Year = end_date.year
+    custom_date_range_end.Year = end_date.year
     report_time.CustomDateRangeEnd = custom_date_range_end
 
     report_request.Time = report_time
