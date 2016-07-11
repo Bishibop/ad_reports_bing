@@ -15,6 +15,8 @@ from app import Customers
 ENVIRONMENT = 'production'
 DEVELOPER_TOKEN = os.environ.get('BING_DEVELOPER_TOKEN')
 CLIENT_ID = os.environ.get('BING_CLIENT_ID')
+CLIENT_SECRET = os.environ.get('BING_CLIENT_SECRET')
+CALLBACK_URL = os.environ.get('BING_CALLBACK_URL')
 
 FILE_DIRECTORY = '~/code'
 
@@ -55,7 +57,9 @@ def authenticate_with_oauth(customer_id):
     global authorization_data
 
     authentication = OAuthWebAuthCodeGrant(
-        client_id = CLIENT_ID
+        CLIENT_ID,
+        CLIENT_SECRET,
+        CALLBACK_URL
     )
 
     authorization_data.authentication = authentication
