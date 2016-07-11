@@ -6,6 +6,7 @@ from time import gmtime, strftime
 from suds import WebFault
 from flask_sqlalchemy import SQLAlchemy
 from functools import partial
+from datetime import datetime, timedelta
 import sys, csv
 
 from app import Customers
@@ -85,7 +86,7 @@ def output_status_message(message):
     print(message)
 
 
-def get_account_report_request(customer_id):
+def get_account_report_request(customer_id, start_date, end_date):
     # this should pass in a client_id, you're going to need it to write the reports
     # use that to get customer_id
 
@@ -100,21 +101,19 @@ def get_account_report_request(customer_id):
     report_request.Scope = scope
 
     report_time = reporting_service.factory.create('ReportTime')
+    report_time.PredefinedTime = None
 
-    # Change this to use a custom time range
-    report_time.PredefinedTime='LastMonth'
+    custom_date_range_start = reporting_service.factory.create('Date')
+    custom_date_range_start.Day = start_date.day
+    custom_date_range_start.Month = start_date.month
+    custom_date_range_start.Year = start_date.year
+    report_time.CustomDateRangeStart = customer_date_range_start
 
-    # custom_date_range_start = reporting_service.factory.create('Date')
-    # custom_date_range_start.Day = 1
-    # custom_date_range_start.Month = 1
-    # custom_date_range_start.Year = 2016
-    # report_time.CustomDateRangeStart = customer_date_range_start
-    # custom_date_range_end = reporting_service.factory.create('Date')
-    # custom_date_range_end.Day = 28
-    # custom_date_range_end.Month = 2
-    # cutom_date_range_end.Year = 2016
-    # report_time.CustomDateRangeEnd = custom_date_range_end
-    # report_time.PredefinedTime = None
+    custom_date_range_end = reporting_service.factory.create('Date')
+    custom_date_range_end.Day = end_date.day
+    custom_date_range_end.Month = end_date.month
+    cutom_date_range_end.Year = end_date.year
+    report_time.CustomDateRangeEnd = custom_date_range_end
 
     report_request.Time = report_time
 
@@ -148,7 +147,7 @@ def background_completion(reporting_download_parameters):
     output_status_message("Download result file: {0}\n".format(result_file_path))
 
 
-def get_report(customer_id):
+def get_report_for_period(customer_id, start_date, end_date):
 
     authenticate_with_oauth(customer_id)
 
@@ -173,7 +172,6 @@ def get_report(customer_id):
         reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
         for row in reader:
             print ', '.join(row)
-
 
 
 # @app.cli.command()
