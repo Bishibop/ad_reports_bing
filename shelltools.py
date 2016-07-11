@@ -72,7 +72,7 @@ def get_refresh_token(customer_id):
     refresh_token = customer.bing_ads_refresh_token
     print("REFRESH TOKEN")
     print(refresh_token)
-    returnn refresh_token
+    return refresh_token
 
 
 def save_refresh_token(customer_id, oauth_tokens):
