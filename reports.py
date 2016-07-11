@@ -168,7 +168,8 @@ def get_report_for_period(customer_id, start_date, end_date):
 
     output_status_message("Program execution completed")
 
-    number_of_csv_lines = (end_date - start_date).days
+    # add one because the report includes both end and start dates
+    number_of_csv_lines = (end_date - start_date).days + 1
     with open('/tmp/result.csv', 'rb') as csvfile:
         sub_file = itertools.islice(csvfile, 11, number_of_csv_lines + 11)
         reader = csv.reader(sub_file)
