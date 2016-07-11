@@ -169,7 +169,7 @@ def get_report(customer_id):
     reporting_download_parameters = ReportingDownloadParameters(
         report_request = report_request,
         result_file_directory = FILE_DIRECTORY,
-        results_file_name = RESULT_FILE_NAME,
+        result_file_name = RESULT_FILE_NAME,
         overwrite_result_file = True,
     )
 
