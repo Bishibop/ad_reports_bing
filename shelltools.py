@@ -68,6 +68,8 @@ def authenticate_with_oauth(customer_id):
 
 
 def get_refresh_token(customer_id):
+    print('printing customer id (or something else)')
+    print(customer_id)
     customer = Customers.query.get(customer_id, None)
     return customer.bing_ads_refresh_token
 
