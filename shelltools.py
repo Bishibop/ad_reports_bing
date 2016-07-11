@@ -154,28 +154,25 @@ def background_completion(reporting_download_parameters):
 
 def get_report(customer_id):
 
-    try:
-        authenticate_with_oauth(customer_id)
+    authenticate_with_oauth(customer_id)
 
-        authorization_data.account_id = 40043731
-        authorization_data.customer_id = 19160679
+    authorization_data.account_id = 40043731
+    authorization_data.customer_id = 19160679
 
-        report_request = get_account_report_request(customer_id)
+    report_request = get_account_report_request(customer_id)
 
-        reporting_download_parameters = ReportingDownloadParameters(
-            report_request = report_request,
-            result_file_directory = FILE_DIRECTORY,
-            results_file_name = RESULT_FILE_NAME,
-            overwrite_result_file = True,
-        )
+    reporting_download_parameters = ReportingDownloadParameters(
+        report_request = report_request,
+        result_file_directory = FILE_DIRECTORY,
+        results_file_name = RESULT_FILE_NAME,
+        overwrite_result_file = True,
+    )
 
-        output_status_message("Awaiting Background Complettion . . .")
-        background_completion(reporting_download_parameters)
+    output_status_message("Awaiting Background Complettion . . .")
+    background_completion(reporting_download_parameters)
 
-        output_status_message("Program execution completed")
+    output_status_message("Program execution completed")
 
-    except Exception as ex:
-        output_status_message(ex)
 
 
 
