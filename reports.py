@@ -179,7 +179,7 @@ def get_report(customer_id):
 
     with open('/tmp/result.csv', 'rb') as csvfile:
         reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
-        for row in spamreader:
+        for row in reader:
             print ', '.join(row)
 
 
