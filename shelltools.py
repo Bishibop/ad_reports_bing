@@ -57,9 +57,9 @@ def authenticate_with_oauth(customer_id):
     global authorization_data
 
     authentication = OAuthWebAuthCodeGrant(
-        CLIENT_ID,
-        CLIENT_SECRET,
-        CALLBACK_URL
+        client_id=os.environ.get('BING_CLIENT_ID'),
+        client_secret=os.environ.get('BING_CLIENT_SECRET'),
+        redirection_uri=os.environ.get('BING_CALLBACK_URL')
     )
 
     authorization_data.authentication = authentication
