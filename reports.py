@@ -154,7 +154,7 @@ def get_report_for_period(customer_id, start_date, end_date):
     authorization_data.account_id = 40043731
     # authorization_data.customer_id = 19160679
 
-    report_request = get_account_report_request(customer_id)
+    report_request = get_account_report_request(customer_id, start_date, end_date)
 
     reporting_download_parameters = ReportingDownloadParameters(
         report_request = report_request,
@@ -172,6 +172,9 @@ def get_report_for_period(customer_id, start_date, end_date):
         reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
         for row in reader:
             print ', '.join(row)
+
+def get_report_for_last_month
+    get_report_for_period(5, datetime.today() - timedelta(months=1), datetime.today())
 
 
 # @app.cli.command()
