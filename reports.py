@@ -7,7 +7,7 @@ from suds import WebFault
 from flask_sqlalchemy import SQLAlchemy
 from functools import partial
 from datetime import datetime, timedelta, date
-import sys, csv
+import sys, csv, itertools
 
 from app import Customers
 
@@ -168,8 +168,10 @@ def get_report_for_period(customer_id, start_date, end_date):
 
     output_status_message("Program execution completed")
 
+    number_of_csv_lines = (end_date - start_date).days
     with open('/tmp/result.csv', 'rb') as csvfile:
-        reader = csv.reader(csvfile)
+        sub_file = itertools.islice(csvfile, 11, number_of_csv_lines + 11)
+        reader = csv.reader(sub_file)
         for row in reader:
             print ', '.join(row)
 
