@@ -173,7 +173,7 @@ def get_report_for_period(customer_id, start_date, end_date):
         for row in reader:
             print ', '.join(row)
 
-def get_report_for_last_month
+def get_report_for_last_month():
     get_report_for_period(5, datetime.today() - timedelta(months=1), datetime.today())
 
 
