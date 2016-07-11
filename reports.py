@@ -170,7 +170,6 @@ def get_report(customer_id):
         report_request = report_request,
         result_file_directory = FILE_DIRECTORY,
         result_file_name = RESULT_FILE_NAME,
-        decompress = True,
         overwrite_result_file = True,
     )
 
