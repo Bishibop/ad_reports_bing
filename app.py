@@ -11,15 +11,8 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 db = SQLAlchemy(app)
 
-class Customers(db.Model):
-    id =                            db.Column(db.Integer, primary_key=True)
-    name =                          db.Column(db.String)
-    created_at =                    db.Column(db.DateTime)
-    updated_at =                    db.Column(db.DateTime, onupdate=datetime.now)
-    bing_ads_access_token =         db.Column(db.String)
-    bing_ads_refresh_token =        db.Column(db.String)
-    bing_ads_issued_at =            db.Column(db.DateTime)
-    bing_ads_expires_in_seconds =   db.Column(db.Integer)
+# Has to be after assignment of db, because models.py needs it
+from models import Customers
 
 def register(customer_id):
     session['customer_id'] = customer_id

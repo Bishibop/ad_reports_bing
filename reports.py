@@ -6,17 +6,15 @@ from time import gmtime, strftime
 from suds import WebFault
 from flask_sqlalchemy import SQLAlchemy
 from functools import partial
-from datetime import datetime, timedelta, date
+from datetime import datetime, date, timedelta
+from dateutil import parser
+from models import Customers, Clients, BingadsReports
+from app import db
 import sys, csv, itertools
-
-from app import Customers
 
 
 ENVIRONMENT = 'production'
 DEVELOPER_TOKEN = os.environ.get('BING_DEVELOPER_TOKEN')
-CLIENT_ID = os.environ.get('BING_CLIENT_ID')
-CLIENT_SECRET = os.environ.get('BING_CLIENT_SECRET')
-CALLBACK_URL = os.environ.get('BING_CALLBACK_URL')
 
 FILE_DIRECTORY = '/tmp'
 
@@ -52,7 +50,7 @@ reporting_service = ServiceClient(
 )
 
 
-def authenticate_with_oauth(customer_id):
+def authenticate_with_oauth(customer):
 
     global authorization_data
 
@@ -64,32 +62,28 @@ def authenticate_with_oauth(customer_id):
 
     authorization_data.authentication = authentication
 
-    authorization_data.authentication.token_refreshed_callback = partial(save_refresh_token, customer_id)
+    authorization_data.authentication.token_refreshed_callback = partial(save_refresh_token, customer)
 
-    refresh_token = get_refresh_token(customer_id)
+    refresh_token = get_refresh_token(customer)
 
     authentication.request_oauth_tokens_by_refresh_token(refresh_token)
 
 
-def get_refresh_token(customer_id):
-    customer = Customers.query.get(customer_id)
-    refresh_token = customer.bing_ads_refresh_token
-    return refresh_token
+def get_refresh_token(customer):
+    return customer.bing_ads_refresh_token
 
 
-def save_refresh_token(customer_id, oauth_tokens):
-    customer = Customers.query.get(customer_id)
+def save_refresh_token(customer, oauth_tokens):
     customer.bing_ads_refresh_token = oauth_tokens.refresh_token
+    db.session.add(customer)
+    db.session.commit()
 
 
 def output_status_message(message):
     print(message)
 
 
-def get_account_report_request(customer_id, start_date, end_date):
-    # this should pass in a client_id, you're going to need it to write the reports
-    # use that to get customer_id
-
+def get_account_report_request(start_date, end_date):
     report_request = reporting_service.factory.create('AccountPerformanceReportRequest')
     report_request.Format = REPORT_FILE_FORMAT
     report_request.ReportName = 'Account Summary Report'
@@ -122,7 +116,6 @@ def get_account_report_request(customer_id, start_date, end_date):
     report_columns = reporting_service.factory.create('ArrayOfAccountPerformanceReportColumn')
     report_columns.AccountPerformanceReportColumn.append([
         'AccountName',
-        'AccountNumber',
         'AccountId',
         'TimePeriod',
         'Impressions',
@@ -147,14 +140,15 @@ def background_completion(reporting_download_parameters):
     output_status_message("Download result file: {0}\n".format(result_file_path))
 
 
-def get_report_for_period(customer_id, start_date, end_date):
+def get_reports_for_date_range(client, start_date, end_date):
 
-    authenticate_with_oauth(customer_id)
+    customer = client.customer
+    authenticate_with_oauth(customer)
 
-    authorization_data.account_id = 40043731
-    # authorization_data.customer_id = 19160679
+    authorization_data.account_id = client.bing_ads_aid
+    #40043731
 
-    report_request = get_account_report_request(customer_id, start_date, end_date)
+    report_request = get_account_report_request(start_date, end_date)
 
     reporting_download_parameters = ReportingDownloadParameters(
         report_request = report_request,
@@ -168,16 +162,67 @@ def get_report_for_period(customer_id, start_date, end_date):
 
     output_status_message("Program execution completed")
 
-    # add one because the report includes both end and start dates
-    number_of_csv_lines = (end_date - start_date).days + 1
+    line_count = None
     with open('/tmp/result.csv', 'rb') as csvfile:
-        sub_file = itertools.islice(csvfile, 11, number_of_csv_lines + 11)
-        reader = csv.reader(sub_file)
-        for row in reader:
-            print ', '.join(row)
+        line_count = sum(1 for _ in csvfile)
 
-def get_report_for_last_month():
-    get_report_for_period(5, date.today() - timedelta(days=30), date.today())
+    with open('/tmp/result.csv', 'rb') as csvfile:
+        sub_file = itertools.islice(csvfile, 11, line_count - 2)
+        reader = csv.reader(sub_file)
+
+        for row in reader:
+            print "--" + ', '.join(row)
+            report_date = parser.parse(row[2]).date()
+
+            exsting_report = client.bingads_reports.filter_by(date=report_date).first()
+            if existing_report:
+                print("already have date for " + row[2])
+                existing_report.date=report_date,
+                existing_report.impressions=row[3],
+                existing_report.clicks=row[4],
+                existing_report.click_through_rate=row[5],
+                existing_report.average_cost_per_click=row[6],
+                existing_report.cost=row[7],
+                existing_report.average_position=row[8],
+                existing_report.conversions=row[9]
+                db.session.add(existing_report)
+            else:
+                print("creating a new report for " + row[2])
+                report = BingadsReports(date=report_date,
+                                        impressions=row[3],
+                                        clicks=row[4],
+                                        click_through_rate=row[5],
+                                        average_cost_per_click=row[6],
+                                        cost=row[7],
+                                        average_position=row[8],
+                                        conversions=row[9])
+                    # took these out because they return blanks for the current date
+                                        # conversion_rate=row[10],
+                                        # cost_per_conversion=row[11])
+                report.client = client
+                db.session.add(report)
+
+    # filling in days with no rows (for which I presume the campaigns were'nt runnign)
+    number_of_days = (end_date - start_date).days
+    date_list = [date.today() - timedelta(days=x) for x in range(0, number_of_days + 1)]
+    for report_date in date_list:
+        if client.bingads_reports.filter_by(date=report_date).first():
+            # there is a record for that date. Do nothing
+            print("already have date for " + report_date.strftime("%m/%d/%Y"))
+        else:
+            print("creating a new (blank) report for " + report_date.strftime("%m/%d/%Y"))
+            report = BingadsReports(date=report_date,
+                                    impressions='0',
+                                    clicks='0',
+                                    click_through_rate='0.0',
+                                    average_cost_per_click='0.0',
+                                    cost='0.0',
+                                    average_position='0.0',
+                                    conversions='0')
+            report.client = client
+            db.session.add(report)
+
+    db.session.commit()
 
 
 # @app.cli.command()
