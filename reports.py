@@ -174,7 +174,7 @@ def get_reports_for_date_range(client, start_date, end_date):
             print "--" + ', '.join(row)
             report_date = parser.parse(row[2]).date()
 
-            exsting_report = client.bingads_reports.filter_by(date=report_date).first()
+            existing_report = client.bingads_reports.filter_by(date=report_date).first()
             if existing_report:
                 print("already have date for " + row[2])
                 existing_report.date=report_date,
