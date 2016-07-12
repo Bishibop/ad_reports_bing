@@ -146,7 +146,6 @@ def get_reports_for_date_range(client, start_date, end_date):
     authenticate_with_oauth(customer)
 
     authorization_data.account_id = client.bing_ads_aid
-    #40043731
 
     report_request = get_account_report_request(start_date, end_date)
 
@@ -176,7 +175,7 @@ def get_reports_for_date_range(client, start_date, end_date):
 
             existing_report = client.bingads_reports.filter_by(date=report_date).first()
             if existing_report:
-                print("already have date for " + row[2])
+                print("already have report for " + row[2])
                 existing_report.date=report_date,
                 existing_report.impressions=row[3],
                 existing_report.clicks=row[4],
