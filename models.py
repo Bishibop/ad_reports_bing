@@ -29,7 +29,7 @@ class BingadsReports(Base):
     impressions =                   db.Column(db.Integer)
     click_through_rate =            db.Column(db.Float)
     clicks =                        db.Column(db.Integer)
-    conversions =                   db.Column(db.Integer)
+    form_conversions =              db.Column(db.Integer)
     cost_per_conversion =           db.Column(db.Float)
     average_cost_per_click =        db.Column(db.Float)
     average_position =              db.Column(db.Float)

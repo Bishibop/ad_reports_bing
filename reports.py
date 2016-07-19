@@ -156,7 +156,7 @@ def get_reports_for_date_range(client, start_date, end_date):
         overwrite_result_file = True,
     )
 
-    output_status_message("Awaiting Background Complettion . . .")
+    output_status_message("Awaiting Background Complettion...")
     background_completion(reporting_download_parameters)
 
     output_status_message("Program execution completed")
@@ -183,7 +183,7 @@ def get_reports_for_date_range(client, start_date, end_date):
                 existing_report.average_cost_per_click=row[6],
                 existing_report.cost=row[7],
                 existing_report.average_position=row[8],
-                existing_report.conversions=row[9]
+                existing_report.form_conversions=row[9]
                 db.session.add(existing_report)
             else:
                 print("creating a new report for " + row[2])
@@ -194,7 +194,7 @@ def get_reports_for_date_range(client, start_date, end_date):
                                         average_cost_per_click=row[6],
                                         cost=row[7],
                                         average_position=row[8],
-                                        conversions=row[9])
+                                        form_conversions=row[9])
                     # took these out because they return blanks for the current date
                                         # conversion_rate=row[10],
                                         # cost_per_conversion=row[11])
@@ -207,7 +207,7 @@ def get_reports_for_date_range(client, start_date, end_date):
     for report_date in date_list:
         if client.bingads_reports.filter_by(date=report_date).first():
             # there is a record for that date. Do nothing
-            print("already have date for " + report_date.strftime("%m/%d/%Y"))
+            print("already have report for " + report_date.strftime("%m/%d/%Y"))
         else:
             print("creating a new (blank) report for " + report_date.strftime("%m/%d/%Y"))
             report = BingadsReports(date=report_date,
@@ -217,7 +217,7 @@ def get_reports_for_date_range(client, start_date, end_date):
                                     average_cost_per_click='0.0',
                                     cost='0.0',
                                     average_position='0.0',
-                                    conversions='0')
+                                    form_conversions='0')
             report.client = client
             db.session.add(report)
 
