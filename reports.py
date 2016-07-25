@@ -156,7 +156,7 @@ def get_reports_for_date_range(client, start_date, end_date):
         overwrite_result_file = True,
     )
 
-    output_status_message("Awaiting Background Complettion...")
+    output_status_message("Awaiting Background Completion...")
     background_completion(reporting_download_parameters)
 
     output_status_message("Program execution completed")
@@ -183,7 +183,8 @@ def get_reports_for_date_range(client, start_date, end_date):
                 existing_report.average_cost_per_click=row[6],
                 existing_report.cost=row[7],
                 existing_report.average_position=row[8],
-                existing_report.form_conversions=row[9]
+                existing_report.form_conversions=row[9],
+                existing_report.conversion_rate=row[10]
                 db.session.add(existing_report)
             else:
                 print("creating a new report for " + row[2])
@@ -194,14 +195,14 @@ def get_reports_for_date_range(client, start_date, end_date):
                                         average_cost_per_click=row[6],
                                         cost=row[7],
                                         average_position=row[8],
-                                        form_conversions=row[9])
-                    # took these out because they return blanks for the current date
-                                        # conversion_rate=row[10],
+                                        form_conversions=row[9],
+                                        conversion_rate=row[10])
+                    # took this out because it returns blank for no conversions
                                         # cost_per_conversion=row[11])
                 report.client = client
                 db.session.add(report)
 
-    # filling in days with no rows (for which I presume the campaigns were'nt runnign)
+    # filling in days with no rows (for which I presume the campaigns weren't running)
     number_of_days = (end_date - start_date).days
     date_list = [date.today() - timedelta(days=x) for x in range(0, number_of_days + 1)]
     for report_date in date_list:
@@ -218,6 +219,7 @@ def get_reports_for_date_range(client, start_date, end_date):
                                     cost='0.0',
                                     average_position='0.0',
                                     form_conversions='0')
+                                    conversion_rate='0.00')
             report.client = client
             db.session.add(report)
 
