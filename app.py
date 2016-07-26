@@ -70,7 +70,7 @@ def generate_authenticator():
 @click.option('--days', default=2)
 def request_reports_for_mcgeorges(days):
     client = Clients.query.filter_by(name="McGeorge's Rolling Hills RV").first()
-    start_date = date.today() - timedelta(days=days)
+    start_date = date.today() - timedelta(days=(days-1))
     reports.request_reports_for_date_range(client, start_date, date.today())
 
 app.secret_key = os.environ.get('FLASK_SECRET_KEY')
