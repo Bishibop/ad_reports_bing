@@ -133,7 +133,7 @@ def background_completion(reporting_download_parameters):
 
     global reporting_service_manager
     result_file_path = reporting_service_manager.download_file(reporting_download_parameters)
-    print("Download result file: {0}\n".format(result_file_path))
+    print("\tDownload result file: {0}\n".format(result_file_path))
 
 
 def request_reports_for_date_range(client, start_date, end_date):
