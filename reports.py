@@ -79,10 +79,6 @@ def save_refresh_token(customer, oauth_tokens):
     db.session.commit()
 
 
-def output_status_message(message):
-    print(message)
-
-
 def get_account_report_request(start_date, end_date):
     report_request = reporting_service.factory.create('AccountPerformanceReportRequest')
     report_request.Format = REPORT_FILE_FORMAT
@@ -137,10 +133,11 @@ def background_completion(reporting_download_parameters):
 
     global reporting_service_manager
     result_file_path = reporting_service_manager.download_file(reporting_download_parameters)
-    output_status_message("Download result file: {0}\n".format(result_file_path))
+    print("Download result file: {0}\n".format(result_file_path))
 
 
-def get_reports_for_date_range(client, start_date, end_date):
+def request_reports_for_date_range(client, start_date, end_date):
+    print("\nGetting reports for " + client.name + " - " + start_date.isoformat() + " to " + end_date.isoformat() + "\n\n")
 
     customer = client.customer
     authenticate_with_oauth(customer)
@@ -156,10 +153,10 @@ def get_reports_for_date_range(client, start_date, end_date):
         overwrite_result_file = True,
     )
 
-    output_status_message("Awaiting Background Completion...")
+    print("\tAwaiting Background Completion...")
     background_completion(reporting_download_parameters)
 
-    output_status_message("Program execution completed")
+    print("\tProgram execution completed")
 
     line_count = None
     with open('/tmp/result.csv', 'rb') as csvfile:
@@ -170,12 +167,12 @@ def get_reports_for_date_range(client, start_date, end_date):
         reader = csv.reader(sub_file)
 
         for row in reader:
-            print "--" + ', '.join(row)
+            print "\t--" + ', '.join(row)
             report_date = parser.parse(row[2]).date()
 
             existing_report = client.bingads_reports.filter_by(date=report_date).first()
             if existing_report:
-                print("already have report for " + row[2])
+                print("\tUpdating report for " + row[2])
                 existing_report.date=report_date,
                 existing_report.impressions=row[3],
                 existing_report.clicks=row[4],
@@ -187,7 +184,7 @@ def get_reports_for_date_range(client, start_date, end_date):
                 existing_report.conversion_rate=row[10]
                 db.session.add(existing_report)
             else:
-                print("creating a new report for " + row[2])
+                print("\tCreating a new report for " + row[2])
                 report = BingadsReports(date=report_date,
                                         impressions=row[3],
                                         clicks=row[4],
@@ -203,14 +200,15 @@ def get_reports_for_date_range(client, start_date, end_date):
                 db.session.add(report)
 
     # filling in days with no rows (for which I presume the campaigns weren't running)
+    print("\n\tChecking for and filling in blank days")
     number_of_days = (end_date - start_date).days
     date_list = [date.today() - timedelta(days=x) for x in range(0, number_of_days + 1)]
     for report_date in date_list:
         if client.bingads_reports.filter_by(date=report_date).first():
             # there is a record for that date. Do nothing
-            print("already have report for " + report_date.strftime("%m/%d/%Y"))
+            print("\tAlready have report for " + report_date.strftime("%m/%d/%Y"))
         else:
-            print("creating a new (blank) report for " + report_date.strftime("%m/%d/%Y"))
+            print("\tCreating a new (blank) report for " + report_date.strftime("%m/%d/%Y"))
             report = BingadsReports(date=report_date,
                                     impressions='0',
                                     clicks='0',
@@ -218,14 +216,11 @@ def get_reports_for_date_range(client, start_date, end_date):
                                     average_cost_per_click='0.0',
                                     cost='0.0',
                                     average_position='0.0',
-                                    form_conversions='0')
+                                    form_conversions='0',
                                     conversion_rate='0.00')
             report.client = client
             db.session.add(report)
 
     db.session.commit()
 
-
-# @app.cli.command()
-# def test_shell_function():
-    # click.echo('testing the shell functionality')
+    print("\nBingads Report request completed.")

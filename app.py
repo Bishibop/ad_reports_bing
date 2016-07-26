@@ -4,7 +4,7 @@ from flask_environments import Environments
 from flask_sqlalchemy import SQLAlchemy
 from bingads import *
 from bingads.bulk import *
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 import os, click
 
 app = Flask(__name__)
@@ -12,7 +12,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 db = SQLAlchemy(app)
 
 # Has to be after assignment of db, because models.py needs it
-from models import Customers
+from models import Customers, Clients
+import reports
 
 def register(customer_id):
     session['customer_id'] = customer_id
@@ -64,6 +65,13 @@ def generate_authenticator():
         client_secret=os.environ.get('BING_CLIENT_SECRET'),
         redirection_uri=os.environ.get('BING_CALLBACK_URL')
     )
+
+@app.cli.command()
+@click.option('--days', default=2)
+def request_reports_for_mcgeorges(days):
+    client = Clients.query.filter_by(name="McGeorge's Rolling Hills RV").first()
+    start_date = date.today() - timedelta(days=days)
+    reports.request_reports_for_date_range(client, start_date, date.today())
 
 app.secret_key = os.environ.get('FLASK_SECRET_KEY')
 
