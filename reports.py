@@ -206,7 +206,6 @@ def request_reports_for_date_range(client, start_date, end_date):
     for report_date in date_list:
         if client.bingads_reports.filter_by(date=report_date).first():
             # there is a record for that date. Do nothing
-            print("\tAlready have report for " + report_date.strftime("%m/%d/%Y"))
         else:
             print("\tCreating a new (blank) report for " + report_date.strftime("%m/%d/%Y"))
             report = BingadsReports(date=report_date,
