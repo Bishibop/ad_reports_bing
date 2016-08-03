@@ -92,7 +92,7 @@ def request_queries_for_mcgeorges(days):
 def request_all_queries_for_mcgeorges():
     client = Clients.query.filter_by(name="McGeorge's Rolling Hills RV").first()
     start_date = client.bingads_reports.order_by(BingadsReports.date).first().date
-    end_date = client.bingads_reports.query.filter_by(query_clicks=None).order_by(BingadsReports.date).last().date
+    end_date = client.bingads_reports.filter_by(query_clicks=None).order_by(BingadsReports.date).last().date
     reports.request_queries_reports(client, start_date, end_date)
 
 app.secret_key = os.environ.get('FLASK_SECRET_KEY')
