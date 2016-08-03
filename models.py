@@ -1,4 +1,6 @@
 from app import db
+from sqlalchemy.dialects.postgresql import HSTORE
+# from sqlalchemy.ext.mutable import MutableDict
 
 class Base(db.Model):
 
@@ -35,6 +37,7 @@ class BingadsReports(Base):
     average_position =              db.Column(db.Float)
     conversion_rate =               db.Column(db.Float)
     date =                          db.Column(db.Date)
+    query_clicks =                  db.Column(HSTORE)
     client_id =                     db.Column(db.Integer, db.ForeignKey('clients.id'))
     client =                        db.relationship(Clients,
                                                     backref=db.backref('bingads_reports', lazy='dynamic'))

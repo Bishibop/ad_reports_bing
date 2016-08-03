@@ -12,7 +12,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 db = SQLAlchemy(app)
 
 # Has to be after assignment of db, because models.py needs it
-from models import Customers, Clients
+from models import Customers, Clients, BingadsReports
 import reports
 
 def register(customer_id):
@@ -68,10 +68,31 @@ def generate_authenticator():
 
 @app.cli.command()
 @click.option('--days', default=2)
-def request_reports_for_mcgeorges(days):
+def request_daily_reports(days):
     client = Clients.query.filter_by(name="McGeorge's Rolling Hills RV").first()
     start_date = date.today() - timedelta(days=(days-1))
-    reports.request_reports_for_date_range(client, start_date, date.today())
+    reports.request_metrics_reports(client, start_date, date.today())
+    reports.request_queries_reports(client, start_date, date.today())
+
+@app.cli.command()
+@click.option('--days', default=2)
+def request_metrics_for_mcgeorges(days):
+    client = Clients.query.filter_by(name="McGeorge's Rolling Hills RV").first()
+    start_date = date.today() - timedelta(days=(days-1))
+    reports.request_metrics_reports(client, start_date, date.today())
+
+@app.cli.command()
+@click.option('--days', default=2)
+def request_queries_for_mcgeorges(days):
+    client = Clients.query.filter_by(name="McGeorge's Rolling Hills RV").first()
+    start_date = date.today() - timedelta(days=(days-1))
+    reports.request_queries_reports(client, start_date, date.today())
+
+@app.cli.command()
+def request_all_queries_for_mcgeorges():
+    client = Clients.query.filter_by(name="McGeorge's Rolling Hills RV").first()
+    start_date = client.bingads_reports.order_by(BingadsReports.date).first().date
+    reports.request_queries_reports(client, start_date, date(2016, 2, 2))
 
 app.secret_key = os.environ.get('FLASK_SECRET_KEY')
 
