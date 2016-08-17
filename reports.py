@@ -62,7 +62,7 @@ def authenticate_with_oauth(customer):
 
     authorization_data.authentication = authentication
 
-    authorization_data.authentication.token_refreshed_callback = partial(save_refresh_token, customer)
+    authorization_data.authentication.token_refreshed_callback = partial(update_tokens, customer)
 
     refresh_token = get_refresh_token(customer)
 
@@ -73,8 +73,12 @@ def get_refresh_token(customer):
     return customer.bing_ads_refresh_token
 
 
-def save_refresh_token(customer, oauth_tokens):
+def update_tokens(customer, oauth_tokens):
     customer.bing_ads_refresh_token = oauth_tokens.refresh_token
+    customer.bing_ads_access_token = oauth_tokens.access_token
+    customer.bing_ads_expires_in_seconds = oauth_tokens.access_token_expires_in_seconds
+    customer.bing_ads_issued_at = datetime.now() - timedelta(seconds=15)
+
     db.session.add(customer)
     db.session.commit()
 
