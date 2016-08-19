@@ -47,10 +47,10 @@ def callback():
     # We do this, rather than 'expires_at', to mirror AdWords' OAuth2 implementation.
     issued_at = datetime.now() - timedelta(seconds=15)
 
-    customer.bing_ads_access_token = access_token
-    customer.bing_ads_refresh_token = refresh_token
-    customer.bing_ads_expires_in_seconds = expires_in_seconds
-    customer.bing_ads_issued_at = issued_at
+    customer.bingads_access_token = access_token
+    customer.bingads_refresh_token = refresh_token
+    customer.bingads_expires_in_seconds = expires_in_seconds
+    customer.bingads_issued_at = issued_at
 
     db.session.commit()
 

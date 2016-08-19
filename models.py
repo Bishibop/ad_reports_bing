@@ -13,15 +13,15 @@ class Base(db.Model):
 
 class Customers(Base):
     name =                          db.Column(db.String)
-    bing_ads_access_token =         db.Column(db.String)
-    bing_ads_refresh_token =        db.Column(db.String)
-    bing_ads_issued_at =            db.Column(db.DateTime)
-    bing_ads_expires_in_seconds =   db.Column(db.Integer)
+    bingads_access_token =          db.Column(db.String)
+    bingads_refresh_token =         db.Column(db.String)
+    bingads_issued_at =             db.Column(db.DateTime)
+    bingads_expires_in_seconds =    db.Column(db.Integer)
 
 
 class Clients(Base):
     name =                          db.Column(db.String)
-    bing_ads_aid =                  db.Column(db.String)
+    bingads_aid =                   db.Column(db.String)
     customer_id =                   db.Column(db.Integer, db.ForeignKey('customers.id'))
     customer =                      db.relationship(Customers,
                                                     backref=db.backref('clients', lazy='dynamic'))

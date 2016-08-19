@@ -70,14 +70,14 @@ def authenticate_with_oauth(customer):
 
 
 def get_refresh_token(customer):
-    return customer.bing_ads_refresh_token
+    return customer.bingads_refresh_token
 
 
 def update_tokens(customer, oauth_tokens):
-    customer.bing_ads_refresh_token = oauth_tokens.refresh_token
-    customer.bing_ads_access_token = oauth_tokens.access_token
-    customer.bing_ads_expires_in_seconds = oauth_tokens.access_token_expires_in_seconds
-    customer.bing_ads_issued_at = datetime.now() - timedelta(seconds=15)
+    customer.bingads_refresh_token = oauth_tokens.refresh_token
+    customer.bingads_access_token = oauth_tokens.access_token
+    customer.bingads_expires_in_seconds = oauth_tokens.access_token_expires_in_seconds
+    customer.bingads_issued_at = datetime.now() - timedelta(seconds=15)
 
     db.session.add(customer)
     db.session.commit()
@@ -197,7 +197,7 @@ def request_queries_reports(client, start_date, end_date):
         customer = client.customer
         authenticate_with_oauth(customer)
 
-        authorization_data.account_id = client.bing_ads_aid
+        authorization_data.account_id = client.bingads_aid
 
         date_list = generate_date_list(start_date, end_date)
 
@@ -260,7 +260,7 @@ def request_metrics_reports(client, start_date, end_date):
         customer = client.customer
         authenticate_with_oauth(customer)
 
-        authorization_data.account_id = client.bing_ads_aid
+        authorization_data.account_id = client.bingads_aid
 
         report_request = get_metrics_report_request(start_date, end_date)
 
@@ -349,7 +349,7 @@ def output_status_message(message):
     print(message)
 
 
-def output_bing_ads_webfault_error(error):
+def output_bingads_webfault_error(error):
     if hasattr(error, 'ErrorCode'):
         output_status_message("ErrorCode: {0}".format(error.ErrorCode))
     if hasattr(error, 'Code'):
@@ -367,9 +367,9 @@ def output_webfault_errors(ex):
         api_errors=ex.fault.detail.ApiFault.OperationErrors.OperationError
         if type(api_errors) == list:
             for api_error in api_errors:
-                output_bing_ads_webfault_error(api_error)
+                output_bingads_webfault_error(api_error)
         else:
-            output_bing_ads_webfault_error(api_errors)
+            output_bingads_webfault_error(api_errors)
     elif hasattr(ex.fault, 'detail') \
         and hasattr(ex.fault.detail, 'AdApiFaultDetail') \
         and hasattr(ex.fault.detail.AdApiFaultDetail, 'Errors') \
@@ -377,9 +377,9 @@ def output_webfault_errors(ex):
         api_errors=ex.fault.detail.AdApiFaultDetail.Errors.AdApiError
         if type(api_errors) == list:
             for api_error in api_errors:
-                output_bing_ads_webfault_error(api_error)
+                output_bingads_webfault_error(api_error)
         else:
-            output_bing_ads_webfault_error(api_errors)
+            output_bingads_webfault_error(api_errors)
     elif hasattr(ex.fault, 'detail') \
         and hasattr(ex.fault.detail, 'ApiFaultDetail') \
         and hasattr(ex.fault.detail.ApiFaultDetail, 'BatchErrors') \
@@ -387,9 +387,9 @@ def output_webfault_errors(ex):
         api_errors=ex.fault.detail.ApiFaultDetail.BatchErrors.BatchError
         if type(api_errors) == list:
             for api_error in api_errors:
-                output_bing_ads_webfault_error(api_error)
+                output_bingads_webfault_error(api_error)
         else:
-            output_bing_ads_webfault_error(api_errors)
+            output_bingads_webfault_error(api_errors)
     elif hasattr(ex.fault, 'detail') \
         and hasattr(ex.fault.detail, 'ApiFaultDetail') \
         and hasattr(ex.fault.detail.ApiFaultDetail, 'OperationErrors') \
@@ -397,9 +397,9 @@ def output_webfault_errors(ex):
         api_errors=ex.fault.detail.ApiFaultDetail.OperationErrors.OperationError
         if type(api_errors) == list:
             for api_error in api_errors:
-                output_bing_ads_webfault_error(api_error)
+                output_bingads_webfault_error(api_error)
         else:
-            output_bing_ads_webfault_error(api_errors)
+            output_bingads_webfault_error(api_errors)
     elif hasattr(ex.fault, 'detail') \
         and hasattr(ex.fault.detail, 'EditorialApiFaultDetail') \
         and hasattr(ex.fault.detail.EditorialApiFaultDetail, 'BatchErrors') \
@@ -407,9 +407,9 @@ def output_webfault_errors(ex):
         api_errors=ex.fault.detail.EditorialApiFaultDetail.BatchErrors.BatchError
         if type(api_errors) == list:
             for api_error in api_errors:
-                output_bing_ads_webfault_error(api_error)
+                output_bingads_webfault_error(api_error)
         else:
-            output_bing_ads_webfault_error(api_errors)
+            output_bingads_webfault_error(api_errors)
     elif hasattr(ex.fault, 'detail') \
         and hasattr(ex.fault.detail, 'EditorialApiFaultDetail') \
         and hasattr(ex.fault.detail.EditorialApiFaultDetail, 'EditorialErrors') \
@@ -417,9 +417,9 @@ def output_webfault_errors(ex):
         api_errors=ex.fault.detail.EditorialApiFaultDetail.EditorialErrors.EditorialError
         if type(api_errors) == list:
             for api_error in api_errors:
-                output_bing_ads_webfault_error(api_error)
+                output_bingads_webfault_error(api_error)
         else:
-            output_bing_ads_webfault_error(api_errors)
+            output_bingads_webfault_error(api_errors)
     elif hasattr(ex.fault, 'detail') \
         and hasattr(ex.fault.detail, 'EditorialApiFaultDetail') \
         and hasattr(ex.fault.detail.EditorialApiFaultDetail, 'OperationErrors') \
@@ -427,9 +427,9 @@ def output_webfault_errors(ex):
         api_errors=ex.fault.detail.EditorialApiFaultDetail.OperationErrors.OperationError
         if type(api_errors) == list:
             for api_error in api_errors:
-                output_bing_ads_webfault_error(api_error)
+                output_bingads_webfault_error(api_error)
         else:
-            output_bing_ads_webfault_error(api_errors)
+            output_bingads_webfault_error(api_errors)
     # Handle serialization errors e.g. The formatter threw an exception while trying
     # to deserialize the message:
     # There was an error while trying to deserialize parameter
