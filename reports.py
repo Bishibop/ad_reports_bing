@@ -290,14 +290,14 @@ def request_metrics_reports(client, start_date, end_date):
                 existing_report = client.bingads_reports.filter_by(date=report_date).first()
                 if existing_report:
                     print("\tUpdating report for " + row[2])
-                    existing_report.date=report_date,
-                    existing_report.impressions=row[3],
-                    existing_report.clicks=row[4],
-                    existing_report.click_through_rate=row[5],
-                    existing_report.average_cost_per_click=row[6],
-                    existing_report.cost=row[7],
-                    existing_report.average_position=row[8],
-                    existing_report.form_conversions=row[9],
+                    existing_report.date=report_date
+                    existing_report.impressions=row[3]
+                    existing_report.clicks=row[4]
+                    existing_report.click_through_rate=row[5]
+                    existing_report.average_cost_per_click=row[6]
+                    existing_report.cost=row[7]
+                    existing_report.average_position=row[8]
+                    existing_report.form_conversions=row[9]
                     # existing_report.conversion_rate=row[10]
                     db.session.add(existing_report)
                 else:
