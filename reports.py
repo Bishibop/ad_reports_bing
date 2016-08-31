@@ -298,7 +298,7 @@ def request_metrics_reports(client, start_date, end_date):
                     existing_report.cost=row[7],
                     existing_report.average_position=row[8],
                     existing_report.form_conversions=row[9],
-                    existing_report.conversion_rate=row[10]
+                    # existing_report.conversion_rate=row[10]
                     db.session.add(existing_report)
                 else:
                     print("\tCreating a new report for " + row[2])
@@ -309,10 +309,10 @@ def request_metrics_reports(client, start_date, end_date):
                                                 average_cost_per_click=row[6],
                                                 cost=row[7],
                                                 average_position=row[8],
-                                                form_conversions=row[9],
-                                                conversion_rate=row[10])
+                                                form_conversions=row[9])
                         # took this out because it returns blank for no conversions
-                                            # cost_per_conversion=row[11])
+                                                # conversion_rate=row[10])
+                                                # cost_per_conversion=row[11])
                     new_report.client = client
                     db.session.add(new_report)
 
